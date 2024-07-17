@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP Tutorial</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Prism CSS for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism-okaidia.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-8">
+        <h1 class="text-3xl font-bold text-orange-500 text-center mb-8">NLP Tutorial</h1>
+        
+        <div class="max-w-4xl" id="tutorial-content"></div>
+    </div>
+
+    <!-- Include Prism.js for syntax highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/prism.min.js"></script>
+    <!-- JavaScript for dynamic content -->
+    <script>
+        const sections = [
+    {
+        title: 'Tokenization',
+        description: 'Splitting a text into individual words or tokens.',
+        code: `
+function tokenize(text) {
+return text.split(/\\s+/);
+}
+
+const text = "Natural Language Processing is fascinating.";
+console.log(tokenize(text)); // Output: ["Natural", "Language", "Processing", "is", "fascinating."]
+        `,
+        output: `["Natural", "Language", "Processing", "is", "fascinating."]`
+    },
+    {
+        title: 'Stop Words Removal',
+        description: 'Removing common words that do not contribute much to the meaning of a sentence.',
+        code: `
+const stopWords = ["is", "a", "the", "in", "on", "and", "or"];
+
+function removeStopWords(tokens) {
+return tokens.filter(token => !stopWords.includes(token.toLowerCase()));
+}
+
+const tokens = ["Natural", "Language", "Processing", "is", "fascinating"];
+console.log(removeStopWords(tokens)); // Output: ["Natural", "Language", "Processing", "fascinating"]
+        `,
+        output: `["Natural", "Language", "Processing", "fascinating"]`
+    },
+    {
+        title: 'Stemming',
+        description: 'Reducing words to their root form.',
+        code: `
+const stemmer = require('stemmer');
+
+function stemTokens(tokens) {
+return tokens.map(token => stemmer(token));
+}
+
+const tokens = ["running", "jumps", "easily"];
+console.log(stemTokens(tokens)); // Output: ["run", "jump", "easili"]
+        `,
+        output: `["run", "jump", "easili"]`
+    },
+    {
+        title: 'Lemmatization',
+        description: 'Reducing words to their base or dictionary form.',
+        code: `
+const { Lemmatizer } = require('node-nlp');
+
+const lemmatizer = new Lemmatizer();
+
+function lemmatizeTokens(tokens) {
+return tokens.map(token => lemmatizer.lemmatize(token));
+}
+
+const tokens = ["running", "jumps", "easily"];
+console.log(lemmatizeTokens(tokens)); // Output: ["run", "jump", "easily"]
+        `,
+        output: `["run", "jump", "easily"]`
+    },
+    {
+        title: 'Part-of-Speech Tagging',
+        description: 'Assigning parts of speech to each word in a sentence.',
+        code: `
+const { NlpManager } = require('node-nlp');
+const manager = new NlpManager();
+
+async function posTagging(text) {
+const result = await manager.process('en', text);
+return result.entities;
+}
+
+const text = "Natural Language Processing is fascinating.";
+posTagging(text).then(tags => console.log(tags)); // Output: POS tags for each word
+        `,
+        output: `POS tags for each word`
+    },
+    {
+        title: 'Named Entity Recognition (NER)',
+        description: 'Identifying and classifying named entities in text.',
+        code: `
+const { NlpManager } = require('node-nlp');
+const manager = new NlpManager({ ner: { useDuckling: true } });
+
+async function ner(text) {
+const result = await manager.process('en', text);
+return result.entities;
+}
+
+const text = "Barack Obama was born in Hawaii.";
+ner(text).then(entities => console.log(entities)); // Output: NER results
+        `,
+        output: `NER results`
+    },
+    {
+        title: 'Sentiment Analysis',
+        description: 'Determining the sentiment or emotion expressed in a text.',
+        code: `
+const { SentimentAnalyzer } = require('node-nlp');
+const sentiment = new SentimentAnalyzer({ language: 'en' });
+
+async function analyzeSentiment(text) {
+const result = await sentiment.getSentiment(text);
+return result;
+}
+
+const text = "I love programming!";
+analyzeSentiment(text).then(result => console.log(result)); // Output: Sentiment analysis result
+        `,
+        output: `Sentiment analysis result`
+    },
+    {
+        title: 'Text Classification',
+        description: 'Classifying text into predefined categories.',
+        code: `
+const { NlpManager } = require('node-nlp');
+const manager = new NlpManager();
+
+async function classify(text) {
+const response = await manager.process('en', text);
+return response.intent;
+}
+
+const text = "Book a flight for tomorrow.";
+classify(text).then(intent => console.log(intent)); // Output: Classified intent
+        `,
+        output: `Classified intent`
+    },
+    {
+        title: 'Language Detection',
+        description: 'Detecting the language of a given text.',
+        code: `
+const franc = require('franc');
+
+function detectLanguage(text) {
+return franc(text);
+}
+
+const text = "Bonjour tout le monde";
+console.log(detectLanguage(text)); // Output: ISO 639-3 code of detected language
+        `,
+        output: `ISO 639-3 code of detected language`
+    },
+    {
+        title: 'Word Embeddings (using word2vec)',
+        description: 'Representing words as vectors in a continuous vector space.',
+        code: `
+const word2vec = require('word2vec');
+
+function loadModel(modelPath) {
+return new Promise((resolve, reject) => {
+word2vec.loadModel(modelPath, (error, model) => {
+if (error) reject(error);
+resolve(model);
+});
+});
+}
+
+async function getWordVector(word) {
+const model = await loadModel('path/to/word2vec/model.bin');
+return model.getVectors([word]);
+}
+
+getWordVector('king').then(vector => console.log(vector)); // Output: Vector representation of the word "king"
+        `,
+        output: `Vector representation of the word "king"`
+    },
+    {
+        title: 'Text Similarity',
+        description: 'Computing the similarity between two texts.',
+        code: `
+const { WordTokenizer, WordVectorModel } = require('natural');
+
+const tokenizer = new WordTokenizer();
+const wvModel = new WordVectorModel('path/to/word2vec/model.bin');
+
+function textSimilarity(text1, text2) {
+const tokens1 = tokenizer.tokenize(text1);
+const tokens2 = tokenizer.tokenize(text2);
+const vector1 = wvModel.getVector(tokens1);
+const vector2 = wvModel.getVector(tokens2);
+return wvModel.getSimilarity(vector1, vector2);
+}
+
+const text1 = "Machine learning is fascinating.";
+const text2 = "Artificial intelligence is interesting.";
+console.log(textSimilarity(text1, text2)); // Output: Similarity score between 0 and 1
+        `,
+        output: `Similarity score between 0 and 1`
+    },
+    {
+        title: 'Text Summarization',
+        description: 'Generating a concise summary of a longer text.',
+        code: `
+const { Summarizer } = require('node-nlp');
+const summarizer = new Summarizer();
+
+async function summarizeText(text) {
+const summary = await summarizer.summarize(text);
+return summary;
+}
+
+const text = "Natural Language Processing is a field of study focusing on the interaction between computers and human language.";
+summarizeText(text).then(summary => console.log(summary)); // Output: Summarized text
+        `,
+        output: `Summarized text`
+    },
+    {
+        title: 'Text Generation (using Markov Chains)',
+        description: 'Generating new text based on the statistical properties of a corpus.',
+        code: `
+const { MarkovChain } = require('markovchain');
+
+function generateText(corpus) {
+const chain = new MarkovChain(corpus);
+return chain.start().end(20).process();
+}
+
+const corpus = "Natural Language Processing is used in various applications including machine translation and sentiment analysis.";
+console.log(generateText(corpus)); // Output: Generated text
+        `,
+        output: `Generated text`
+    },
+    {
+        title: 'Dependency Parsing',
+        description: 'Analyzing the grammatical structure of sentences to determine relationships between words.',
+        code: `
+const { Parser } = require('dependency-parser-js');
+const parser = new Parser();
+
+function parseDependency(text) {
+return parser.parse(text);
+}
+
+const text = "The quick brown fox jumps over the lazy dog.";
+console.log(parseDependency(text)); // Output: Dependency parse tree
+        `,
+        output: `Dependency parse tree`
+    },
+    {
+        title: 'Text Correction (Spell Checking)',
+        description: 'Correcting spelling errors in text.',
+        code: `
+const { SpellCheck } = require('spellcheck');
+
+const spellchecker = new SpellCheck();
+spellchecker.loadDictionary('en-US');
+
+function correctSpelling(text) {
+return spellchecker.checkSpelling(text);
+}
+
+const text = "This sentenc has a misspelled word.";
+console.log(correctSpelling(text)); // Output: Corrected sentence
+        `,
+        output: `Corrected sentence`
+    },
+    {
+        title: 'Topic Modeling',
+        description: 'Identifying topics within a collection of texts.',
+        code: `
+const { TopicModel } = require('topic-model');
+
+async function generateTopics(corpus) {
+const model = new TopicModel();
+await model.fit(corpus);
+const topics = model.getTopics();
+return topics;
+}
+
+const corpus = ["Text 1 about machine learning.", "Text 2 discussing natural language processing."];
+generateTopics(corpus).then(topics => console.log(topics)); // Output: Identified topics
+        `,
+        output: `Identified topics`
+    },
+    {
+        title: 'Text Classification using BERT',
+        description: 'Performing text classification using a pre-trained BERT model.',
+        code: `
+const { BertForSequenceClassification } = require('bert-for-tfjs');
+
+async function classifyText(text) {
+const model = await BertForSequenceClassification.fromPretrained('bert-base-uncased');
+const result = await model.predict(text);
+return result;
+}
+
+const text = "This movie was great!";
+classifyText(text).then(result => console.log(result)); // Output: Classification result
+        `,
+        output: `Classification result`
+    },
+    {
+        title: 'Entity Linking',
+        description: 'Linking named entities in text to corresponding entries in a knowledge base.',
+        code: `
+const { EntityLinker } = require('node-nlp');
+
+const linker = new EntityLinker();
+
+async function linkEntities(text) {
+const entities = await linker.linkEntities(text);
+return entities;
+}
+
+const text = "Albert Einstein was a physicist.";
+linkEntities(text).then(entities => console.log(entities)); // Output: Linked entities
+        `,
+        output: `Linked entities`
+    },
+    {
+        title: 'Text-to-Speech (TTS)',
+        description: 'Converting text into spoken audio.',
+        code: `
+const { TextToSpeech } = require('text-to-speech');
+
+const tts = new TextToSpeech();
+
+async function convertTextToSpeech(text) {
+const audio = await tts.synthesize(text);
+return audio;
+}
+
+const text = "Hello, how are you?";
+convertTextToSpeech(text).then(audio => console.log(audio)); // Output: Audio file
+        `,
+        output: `Audio file`
+    },
+    {
+        title: 'Named Entity Recognition (NER) with Transformers',
+        description: 'Recognizing named entities using transformer-based models.',
+        code: `
+const { pipeline } = require('@tensorflow/tfjs-node');
+
+async function recognizeEntities(text) {
+const nerPipeline = await pipeline('ner', { model: 'dbmdz/bert-large-cased-finetuned-conll03-english' });
+const result = await nerPipeline(text);
+return result;
+}
+
+const text = "Apple is headquartered in Cupertino, California.";
+recognizeEntities(text).then(entities => console.log(entities)); // Output: Recognized entities
+        `,
+        output: `Recognized entities`
+    },
+    {
+        title: 'Machine Translation',
+        description: 'Translating text from one language to another.',
+        code: `
+const { Translator } = require('translation');
+
+const translator = new Translator();
+
+async function translateText(text, sourceLang, targetLang) {
+const translation = await translator.translate(text, sourceLang, targetLang);
+return translation;
+}
+
+const text = "Hello, how are you?";
+translateText(text, 'en', 'fr').then(translatedText => console.log(translatedText)); // Output: Translated text
+        `,
+        output: `Translated text`
+    },
+    {
+        title: 'Intent Recognition',
+        description: 'Recognizing the intent or purpose behind a user\'s input.',
+        code: `
+const { IntentRecognizer } = require('node-nlp');
+
+const recognizer = new IntentRecognizer();
+
+async function recognizeIntent(text) {
+const intent = await recognizer.recognize(text);
+return intent;
+}
+
+const text = "Set an alarm for 7 AM.";
+recognizeIntent(text).then(intent => console.log(intent)); // Output: Recognized intent
+        `,
+        output: `Recognized intent`
+    },
+    {
+        title: 'Text Generation (using GPT-3)',
+        description: 'Generating natural language text using OpenAI\'s GPT-3 model.',
+        code: `
+const { GPT3 } = require('gpt-3');
+
+const gpt3 = new GPT3();
+
+async function generateText(prompt) {
+    const response = await gpt3.complete(prompt);
+    return response.choices[0].text;
+}
+
+const prompt = "Once upon a time";
+generateText(prompt).then(text => console.log(text)); // Output: Generated text
+        `,
+        output: `Generated text`
+    },
+    {
+        title: 'Question Answering (using BERT)',
+        description: 'Answering questions based on context using a pre-trained BERT model.',
+        code: `
+const { BertForQuestionAnswering } = require('bert-for-tfjs');
+
+async function answerQuestion(context, question) {
+    const model = await BertForQuestionAnswering.fromPretrained('bert-large-uncased-whole-word-masking-finetuned-squad');
+    const result = await model.predict(context, question);
+    return result;
+}
+
+const context = "Natural Language Processing (NLP) is a field of study focused on the interaction between computers and human language.";
+const question = "What is NLP?";
+answerQuestion(context, question).then(answer => console.log(answer)); // Output: Answer to the question
+        `,
+        output: `Answer to the question`
+    },
+    {
+        title: 'Text Classification using TensorFlow.js',
+        description: 'Performing text classification using a deep learning model with TensorFlow.js.',
+        code: `
+const tf = require('@tensorflow/tfjs');
+
+async function classifyText(text) {
+    const model = await tf.loadLayersModel('path/to/model.json');
+    const prediction = model.predict(text);
+    return prediction;
+}
+
+const text = "This is a test text for classification.";
+classifyText(text).then(prediction => console.log(prediction)); // Output: Classification prediction
+        `,
+        output: `Classification prediction`
+    },
+    {
+        title: 'Text-to-Text Generation (using T5)',
+        description: 'Generating text-to-text transformations using Google\'s T5 model.',
+        code: `
+const { T5 } = require('t5');
+
+const t5 = new T5();
+
+async function generateText(inputText) {
+    const response = await t5.predict(inputText);
+    return response.text;
+}
+
+const inputText = "Translate 'hello' to French.";
+generateText(inputText).then(outputText => console.log(outputText)); // Output: Translated text
+        `,
+        output: `Translated text`
+    },
+    {
+        title: 'Aspect-Based Sentiment Analysis',
+        description: 'Analyzing sentiments related to specific aspects or entities within text.',
+        code: `
+const { AspectSentimentAnalyzer } = require('aspect-sentiment');
+
+const analyzer = new AspectSentimentAnalyzer();
+
+async function analyzeAspectSentiment(text, aspect) {
+    const result = await analyzer.analyze(text, aspect);
+    return result.sentiment;
+}
+
+const text = "The camera of this phone is excellent, but the battery life is disappointing.";
+const aspect = "camera";
+analyzeAspectSentiment(text, aspect).then(sentiment => console.log(sentiment)); // Output: Sentiment related to the aspect
+        `,
+        output: `Sentiment related to the aspect`
+    },
+    {
+        title: 'Text Similarity (using Universal Sentence Encoder)',
+        description: 'Computing semantic similarity between two texts using TensorFlow.js Universal Sentence Encoder.',
+        code: `
+const { use } = require('@tensorflow-models/universal-sentence-encoder');
+
+async function calculateSimilarity(text1, text2) {
+    const model = await use.load();
+    const embeddings = await model.embed([text1, text2]);
+    const similarity = embeddings[0].dot(embeddings[1]).dataSync()[0];
+    return similarity;
+}
+
+const text1 = "Machine learning is fascinating.";
+const text2 = "Artificial intelligence is interesting.";
+calculateSimilarity(text1, text2).then(similarity => console.log(similarity)); // Output: Similarity score
+        `,
+        output: `Similarity score`
+    },
+    {
+        title: 'Text Classification using BERT (Fine-Tuning)',
+        description: 'Fine-tuning a pre-trained BERT model for text classification tasks.',
+        code: `
+const { BertTextClassification } = require('bert-text-classification');
+
+const classifier = new BertTextClassification();
+
+async function classifyText(text) {
+    await classifier.loadModel('path/to/pretrained-model');
+    const result = await classifier.predict(text);
+    return result;
+}
+
+const text = "This movie is very entertaining!";
+classifyText(text).then(prediction => console.log(prediction)); // Output: Classification result
+        `,
+        output: `Classification result`
+    },
+    {
+        title: 'Language Modeling (using GPT-2)',
+        description: 'Generating text based on a language model using OpenAI\'s GPT-2 model.',
+        code: `
+const { GPT2 } = require('gpt-2');
+
+const gpt2 = new GPT2();
+
+async function generateText(prompt) {
+    const response = await gpt2.generate(prompt);
+    return response.text;
+}
+
+const prompt = "Once upon a time";
+generateText(prompt).then(text => console.log(text)); // Output: Generated text
+        `,
+        output: `Generated text`
+    },
+    {
+        title: 'Coreference Resolution',
+        description: 'Resolving coreferences (pronouns and nouns referring to the same entity) in text.',
+        code: `
+const { CoreferenceResolution } = require('coref-resolution');
+
+const resolver = new CoreferenceResolution();
+
+async function resolveCoreferences(text) {
+    const resolvedText = await resolver.resolve(text);
+    return resolvedText;
+}
+
+const text = "John said he likes apples. He buys them every week.";
+resolveCoreferences(text).then(resolvedText => console.log(resolvedText)); // Output: Resolved text
+        `,
+        output: `Resolved text`
+    },
+    {
+        title: 'Dialogue Systems (Chatbots)',
+        description: 'Building conversational agents using frameworks like Rasa or Dialogflow.',
+        code: `
+const { Rasa } = require('rasa');
+
+const bot = new Rasa();
+
+async function chatWithBot(userInput) {
+    const response = await bot.send(userInput);
+    return response;
+}
+
+const userInput = "What is the weather today?";
+chatWithBot(userInput).then(response => console.log(response)); // Output: Bot response
+        `,
+        output: `Bot response`
+    },
+    {
+        title: 'Text Annotation (Named Entity Recognition)',
+        description: 'Annotating text with named entities using spaCy.js or similar libraries.',
+        code: `
+const { NER } = require('spacy-js');
+
+const ner = new NER();
+
+async function annotateEntities(text) {
+    const entities = await ner.annotate(text);
+    return entities;
+}
+
+const text = "Apple Inc. is headquartered in Cupertino, California.";
+annotateEntities(text).then(entities => console.log(entities)); // Output: Annotated entities
+        `,
+        output: `Annotated entities`
+    },
+    {
+        title: 'Text Clustering',
+        description: 'Grouping similar texts into clusters based on their semantic similarity or features.',
+        code: `
+const { TextClustering } = require('text-clustering');
+
+const clusterer = new TextClustering();
+
+async function clusterTexts(texts) {
+    const clusters = await clusterer.cluster(texts);
+    return clusters;
+}
+
+const texts = ["Machine learning is fascinating.", "Artificial intelligence is interesting.", "Natural language processing is complex."];
+clusterTexts(texts).then(clusters => console.log(clusters)); // Output: Text clusters
+        `,
+        output: `Text clusters`
+    },
+    {
+        title: 'Dependency Parsing (using spaCy)',
+        description: 'Analyzing the grammatical structure of sentences to determine relationships between words.',
+        code: `
+const { DependencyParser } = require('spacy-js');
+
+const parser = new DependencyParser();
+
+async function parseDependency(text) {
+    const dependencies = await parser.parse(text);
+    return dependencies;
+}
+
+const text = "The quick brown fox jumps over the lazy dog.";
+parseDependency(text).then(dependencies => console.log(dependencies)); // Output: Dependency parse tree
+        `,
+        output: `Dependency parse tree`
+    },
+    {
+        title: 'Text Generation (using LSTM)',
+        description: 'Generating text using Long Short-Term Memory (LSTM) networks.',
+        code: `
+const { LSTMGenerator } = require('lstm-generator');
+
+const generator = new LSTMGenerator();
+
+async function generateText() {
+    const text = await generator.generate();
+    return text;
+}
+
+generateText().then(text => console.log(text)); // Output: Generated text
+        `,
+        output: `Generated text`
+    },
+    {
+        title: 'Text Summarization (using BART)',
+        description: 'Generating a concise summary of a longer text using Facebook\'s BART model.',
+        code: `
+const { BART } = require('bart');
+
+const summarizer = new BART();
+
+async function summarizeText(text) {
+    const summary = await summarizer.summarize(text);
+    return summary;
+}
+
+const text = "Natural Language Processing is a field of study focusing on the interaction between computers and human language.";
+summarizeText(text).then(summary => console.log(summary)); // Output: Summarized text
+        `,
+        output: `Summarized text`
+    },
+    {
+        title: 'Document Classification (using SVM)',
+        description: 'Classifying documents into predefined categories using Support Vector Machines (SVM).',
+        code: `
+const { SVM } = require('svm-js');
+
+const classifier = new SVM();
+
+function classifyDocument(document) {
+    const category = classifier.predict(document);
+    return category;
+}
+
+const document = "This document discusses machine learning techniques.";
+console.log(classifyDocument(document)); // Output: Document category
+        `,
+        output: `Document category`
+    },
+    {
+        title: 'Keyword Extraction',
+        description: 'Identifying and extracting important keywords or phrases from text.',
+        code: `
+const { KeywordExtractor } = require('keyword-extractor');
+
+const extractor = new KeywordExtractor();
+
+function extractKeywords(text) {
+    const keywords = extractor.extract(text);
+    return keywords;
+}
+
+const text = "Natural Language Processing techniques include tokenization and sentiment analysis.";
+console.log(extractKeywords(text)); // Output: Extracted keywords
+        `,
+        output: `Extracted keywords`
+    },
+    {
+        title: 'Topic Modeling (using LDA)',
+        description: 'Identifying topics within a collection of texts using Latent Dirichlet Allocation (LDA).',
+        code: `
+const { LDA } = require('lda');
+
+function generateTopics(documents) {
+    const lda = new LDA();
+    lda.fit(documents);
+    const topics = lda.getTopics();
+    return topics;
+}
+
+const documents = ["Text 1 about machine learning.", "Text 2 discussing natural language processing."];
+console.log(generateTopics(documents)); // Output: Identified topics
+        `,
+        output: `Identified topics`
+    },
+    {
+    title: 'Text Normalization',
+    description: 'Normalizing text to a standard form, including case normalization and punctuation removal.',
+    code: `
+function normalizeText(text) {
+    return text.toLowerCase().replace(/[.,\/#!$%^&*;:{}=\-_\\\`~()]/g, "");
+}
+
+const text = "Hello, World!";
+console.log(normalizeText(text)); // Output: "hello world"
+    `,
+    output: `"hello world"`
+},
+{
+        title: 'Text Alignment',
+        description: 'Aligning sentences or phrases in parallel texts for translation or comparison.',
+        code: `
+const { TextAlignment } = require('text-alignment');
+
+const aligner = new TextAlignment();
+
+async function alignTexts(sourceText, targetText) {
+    const alignment = await aligner.align(sourceText, targetText);
+    return alignment;
+}
+
+const sourceText = "This is the source text.";
+const targetText = "Here is the target text.";
+alignTexts(sourceText, targetText).then(alignment => console.log(alignment)); // Output: Text alignment
+        `,
+        output: `Text alignment`
+    },
+    {
+        title: 'Named Entity Recognition (NER) with BERT',
+        description: 'Recognizing named entities using transformer-based models like BERT.',
+        code: `
+const { BertNER } = require('bert-ner');
+
+const nerModel = new BertNER();
+
+async function recognizeEntities(text) {
+    const entities = await nerModel.predict(text);
+    return entities;
+}
+
+const text = "Apple is headquartered in Cupertino, California.";
+recognizeEntities(text).then(entities => console.log(entities)); // Output: Recognized entities
+        `,
+        output: `Recognized entities`
+    },
+    {
+        title: 'Document Embedding (using Doc2Vec)',
+        description: 'Generating document embeddings using Doc2Vec model.',
+        code: `
+const { Doc2Vec } = require('doc2vec');
+
+const doc2vecModel = new Doc2Vec();
+
+async function embedDocument(document) {
+    const embedding = await doc2vecModel.embed(document);
+    return embedding;
+}
+
+const document = "This is a document about natural language processing.";
+embedDocument(document).then(embedding => console.log(embedding)); // Output: Document embedding
+        `,
+        output: `Document embedding`
+    },
+    {
+        title: 'Coreference Resolution (using AllenNLP)',
+        description: 'Resolving coreferences in text using AllenNLP library.',
+        code: `
+const { AllenCorefResolver } = require('allen-coref-resolver');
+
+const corefResolver = new AllenCorefResolver();
+
+async function resolveCoreferences(text) {
+    const resolvedText = await corefResolver.resolve(text);
+    return resolvedText;
+}
+
+const text = "John said he likes apples. He buys them every week.";
+resolveCoreferences(text).then(resolvedText => console.log(resolvedText)); // Output: Resolved text
+        `,
+        output: `Resolved text`
+    },
+    {
+        title: 'Text Segmentation (Sentence Boundary Detection)',
+        description: 'Detecting boundaries between sentences in a text.',
+        code: `
+const { SentenceSegmenter } = require('sentence-segmenter');
+
+const segmenter = new SentenceSegmenter();
+
+function segmentText(text) {
+    const segments = segmenter.segment(text);
+    return segments;
+}
+
+const text = "Natural language processing is a fascinating field. It has many applications.";
+console.log(segmentText(text)); // Output: Segmented sentences
+        `,
+        output: `Segmented sentences`
+    },
+    {
+        title: 'Relation Extraction',
+        description: 'Extracting relationships or interactions between entities mentioned in text.',
+        code: `
+const { RelationExtractor } = require('relation-extractor');
+
+const extractor = new RelationExtractor();
+
+async function extractRelations(text) {
+    const relations = await extractor.extract(text);
+    return relations;
+}
+
+const text = "Barack Obama was born in Hawaii.";
+extractRelations(text).then(relations => console.log(relations)); // Output: Extracted relations
+        `,
+        output: `Extracted relations`
+    },
+    {
+        title: 'Dialogue Act Classification',
+        description: 'Classifying dialogue acts (e.g., question, statement, request) in conversational text.',
+        code: `
+const { DialogueActClassifier } = require('dialogue-act-classifier');
+
+const classifier = new DialogueActClassifier();
+
+async function classifyDialogueAct(text) {
+    const dialogueAct = await classifier.classify(text);
+    return dialogueAct;
+}
+
+const text = "Can you please help me with this problem?";
+classifyDialogueAct(text).then(dialogueAct => console.log(dialogueAct)); // Output: Classified dialogue act
+        `,
+        output: `Classified dialogue act`
+    }
+
+];
+
+function createSection(section) {
+    const template = document.createElement('div');
+    template.innerHTML = `
+        <div class="w-full md:w-[100rem] mb-8 mx-auto"> <!-- Adjusted width classes -->
+            <h2 class="text-2xl font-bold mb-2">${section.title}</h2>
+            <p class="text-gray-700 mb-4">${section.description}</p>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="font-bold mb-2">Code</h3>
+                <pre><code class="language-javascript">${section.code.trim()}</code></pre>
+                <h3 class="font-bold mb-2">Output</h3>
+                <pre><code>${section.output}</code></pre>
+            </div>
+        </div>
+    `;
+    document.getElementById('tutorial-content').appendChild(template);
+}
+
+sections.forEach(createSection);
+
+// Initialize Prism.js for syntax highlighting
+Prism.highlightAll();
+
+    </script>
+</body>
+</html>
